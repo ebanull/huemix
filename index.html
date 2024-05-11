@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цветные Плитки</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .tile {
+            width: 95px;
+            height: 95px;
+            margin: 1px;
+            cursor: pointer;
+        }
+
+        .wrapper {
+            width: 600px;
+            display: grid;
+            grid-gap: 5px;
+            grid-template-columns: repeat(5, 100px);
+            grid-template-rows: repeat(5, 100px);
+            grid-auto-flow: column;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        const colors = ['lawngreen', 'magenta'];
+        let tiles = [];
+        let size = 5;
+
+        function createGrid(size) {
+            const grid = document.createElement('div');
+            grid.classList.add('wrapper')
+            for (let i = 0; i < size; i++) {
+                const row = [];
+                for (let j = 0; j < size; j++) {
+                    const tile = document.createElement('div');
+                    tile.classList.add('tile');
+                    tile.dataset.row = i;
+                    tile.dataset.col = j;
+                    tile.style.backgroundColor = colors[0];
+                    tile.addEventListener('click', () => {
+                        changeColor(parseInt(tile.dataset.row), parseInt(tile.dataset.col));
+                    });
+                    row.push(tile);
+                    grid.appendChild(tile);
+                }
+                tiles.push(row);
+            }
+            document.body.appendChild(grid);
+
+            let html_tiles = grid.children;
+            for (let i = 0; i < 100; i++) {
+                html_tiles[Math.floor(Math.random() * html_tiles.length)].click()
+            }
+        }
+
+        function switchColor(from) {
+            return colors[(colors.indexOf(from) + 1) % colors.length]
+        }
+
+        function changeColor(row, col) {
+            // const currentColor = tiles[row][col].style.backgroundColor;
+            const newColor = switchColor(tiles[row][col].style.backgroundColor)
+            tiles[row][col].style.backgroundColor = newColor;
+            // Change color of adjacent tiles
+            const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+            for (const [dx, dy] of directions) {
+                const newRow = row + dx;
+                const newCol = col + dy;
+                if (isValid(newRow, newCol)) {
+                    const oldColor = tiles[newRow][newCol].style.backgroundColor;
+                    tiles[newRow][newCol].style.backgroundColor = switchColor(oldColor);
+                }
+            }
+            // Check if all tiles have the same color
+            if (isComplete()) {
+                alert('Поздравляю! Вы выиграли!');
+                location.reload(); // Reload the page to play again
+            }
+        }
+
+        function isValid(row, col) {
+            return row >= 0 && row < size && col >= 0 && col < size;
+        }
+
+        function isComplete() {
+            const color = tiles[0][0].style.backgroundColor;
+            for (const row of tiles) {
+                for (const tile of row) {
+                    if (tile.style.backgroundColor !== color) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        createGrid(size);
+    </script>
+</body>
+
+</html>
