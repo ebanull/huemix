@@ -1,0 +1,41 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    line-height: 1.5;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #ffffff;
+    background-color: #242936;
+}
+
+header {
+    padding: 1rem;
+}
+
+header p {
+    opacity: .5;
+}
+
+main {
+    max-width: 576px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+#board {
+    display: grid;
+    grid-gap: .25rem;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.tile {
+    width: 100%;
+    aspect-ratio: 1;
+}
