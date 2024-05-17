@@ -69,7 +69,7 @@ function run() {
     // reset
     moves = 0
     tiles = []
-    pm = Math.floor(Math.random() * 10) + 1
+    pm = [1, 3, 5, 7, 9][Math.floor(Math.random() * 5)]
 
     board.innerHTML = ""
     board.style.pointerEvents = "auto";
