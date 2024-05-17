@@ -9,17 +9,19 @@
 body {
     line-height: 1.5;
     text-align: center;
+    font-size: 16px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: #ffffff;
     background-color: #242936;
 }
 
-header {
+header,
+footer {
     padding: 1rem;
 }
 
 header p {
-    opacity: .5;
+    margin-top: 1rem;
 }
 
 main {
@@ -33,6 +35,14 @@ main {
     grid-gap: .25rem;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
+}
+
+#reset {
+    display: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    text-decoration: underline
 }
 
 .tile {

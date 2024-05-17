@@ -1,26 +1,24 @@
 let size = 5
 let moves = 0
 let tiles = []
+let pm = 2
+
 const colors = ['hotpink', 'gold']
+const board = document.getElementById("board")
+const message = document.getElementById("message")
+const reset = document.getElementById("reset")
 
 
-function getRandomColor() {
-    return colors[Math.floor(Math.random() * colors.length)]
-}
-
-function switchColor(from) {
-    return colors[(colors.indexOf(from) + 1) % colors.length]
+function switchColor(color) {
+    return colors[(colors.indexOf(color) + 1) % colors.length]
 }
 
 function isValid(row, col) {
     return row >= 0 && row < size && col >= 0 && col < size;
 }
 
-function move(row, col) {
-    const newColor = switchColor(tiles[row][col].style.backgroundColor)
-    tiles[row][col].style.backgroundColor = newColor;
-    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-    for (const [dx, dy] of directions) {
+function switchNeighbors(row, col) {
+    for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
         const newRow = row + dx;
         const newCol = col + dy;
         if (isValid(newRow, newCol)) {
@@ -28,11 +26,30 @@ function move(row, col) {
             tiles[newRow][newCol].style.backgroundColor = switchColor(oldColor);
         }
     }
+}
 
-    moves++;
+function move(row, col, counter = false) {
+    if (counter) {
+        moves++;
+    }
+
+    const newColor = switchColor(tiles[row][col].style.backgroundColor)
+    tiles[row][col].style.backgroundColor = newColor;
+
+    switchNeighbors(row, col);
 
     if (isComplete() && moves > 0) {
-        setTimeout(() => { alert("Поздравляю! Вы выиграли за " + moves + " ходов") }, 500);
+        setTimeout(() => {
+            message.style.color = 'yellowgreen';
+            message.innerHTML = `Congratulations! You completed the level in ${moves} moves!`
+
+            if (moves < pm) {
+                message.innerHTML = `Wow! You did it in ${moves} moves. Are you alien?`
+            }
+
+            reset.style.display = "block";
+            board.style.pointerEvents = "none";
+        }, 500);
     }
 }
 
@@ -49,14 +66,20 @@ function isComplete() {
 }
 
 function run() {
-    const board = document.getElementById("board")
-
     // reset
     moves = 0
     tiles = []
-    board.innerHTML = ""
+    pm = Math.floor(Math.random() * 10) + 1
 
-    // generate board
+    board.innerHTML = ""
+    board.style.pointerEvents = "auto";
+
+    message.style.color = 'inherit';
+    message.innerHTML = `Try to complete the level in ${pm} moves`
+
+    reset.style.display = "none";
+
+
     for (let i = 0; i < size; i++) {
         const row = []
         for (let j = 0; j < size; j++) {
@@ -64,15 +87,17 @@ function run() {
             tile.classList.add("tile")
             tile.dataset.row = i
             tile.dataset.col = j
-            tile.style.backgroundColor = getRandomColor()
-            tile.onclick = () => { move(i, j) }
-
+            tile.style.backgroundColor = colors[0]
+            tile.onclick = () => { move(i, j, true) }
             board.appendChild(tile)
             row.push(tile)
         }
         tiles.push(row)
     }
-}
 
+    for (let i = 0; i < pm; i++) {
+        move(Math.floor(Math.random() * size), Math.floor(Math.random() * size))
+    }
+}
 
 window.onload = run
